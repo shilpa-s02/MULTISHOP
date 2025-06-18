@@ -13,8 +13,9 @@ def shop(request):
     return render(request,'shop.html',{'form':form})
 
 
-def detail(request):
-    return render(request,'detail.html')
+def detail(request,pk):
+    product= products.objects.get(id=pk)
+    return render(request,'detail.html',{'product':product})
 
 def cart(request):
     return render(request,'cart.html')
@@ -96,6 +97,7 @@ def product(request):
         if form.is_valid():
             form.save()
             print("product added successfully")
+            messages.success (request,"product added successfully")
         else:
             messages.error(request,"you have an error")
     else:

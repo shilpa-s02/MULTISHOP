@@ -598,6 +598,28 @@
                 <button type="submit" class="submit-btn">
                     🚀 Publish Product
                 </button>
+                <br>
+
+                <div class="action-buttons">
+                            <!-- {% comment %} <button class="btn btn-seller">
+                                <i class="fas fa-plus me-1"></i>Add Product
+                            </button> {% endcomment %} -->
+                            {% comment %} <a class="btn  btn-seller"href="{% url 'seller' %}">
+                                <i class="fas fa-star me-1"></i> ↪Dashboard
+                            </a> {% endcomment %}
+
+                        <button type="submit" class="submit-btn">
+                          
+                            <a class="btn  btn-seller"href="{% url 'seller' %}">
+                                 ↪Dashboard
+                            </a>
+                        </button>
+                        </div>
+
+
+                {% comment %} <a href="{% url 'seller' %}" class="text-indigo-600 hover:underline font-semibold ml-1">
+                        Dashboard
+                    </a> {% endcomment %}
             </form>
         </div>
     </div>
