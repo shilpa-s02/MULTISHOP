@@ -13,8 +13,29 @@ def shop(request):
     return render(request,'shop.html',{'form':form})
 
 
+#add product to cart
 def detail(request,pk):
     product= products.objects.get(id=pk)
+
+    if request.method =='POST':
+        cart = request.session.get('cart',{})
+        product_id = str(product.id)
+        quantity =int(request.POST.get('quantity',1))
+
+        #add or update product in cart
+        if product_id in cart:
+            cart[product_id]['quantity'] += quantity
+        else:
+            cart[product_id] ={
+                'productName':product.productName,
+                'price':float(product.price),
+                'image':product.image.url if product.image else '',
+                'quantity': quantity,
+            }
+            request.session['cart'] = cart
+            request.session.modified =True
+
+            return redirect('cart')
     return render(request,'detail.html',{'product':product})
 
 def cart(request):
@@ -110,4 +131,7 @@ def seller(request):
 
 def seller_header(request):
     return render(request,'seller_header.html')
+
+def new(request):
+    return render(request,'new.html')
 
