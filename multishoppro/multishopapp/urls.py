@@ -18,5 +18,6 @@ urlpatterns=[
     path("product/",views.product,name='product'),
     path("seller/",views.seller,name='seller'),
     path("sellerheader/",views.seller_header,name='seller_header'),
-    path("new/",views.new,name='new')
+    path("new/",views.new,name='new'),
+    path("remove_from_cart/",views.cart,name="remove_from_cart"),
 ]

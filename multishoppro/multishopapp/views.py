@@ -1,9 +1,10 @@
 from django.shortcuts import render,redirect
-from .forms import ProductForm,RegisterForm
+from .forms import ProductForm,RegisterForm,CheckoutForm
 from .models import products,ModelRegister
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+import random
 # Create your views here.
 def index(request):
     return render(request,'index.html')
@@ -32,17 +33,147 @@ def detail(request,pk):
                 'image':product.image.url if product.image else '',
                 'quantity': quantity,
             }
-            request.session['cart'] = cart
-            request.session.modified =True
+        request.session['cart'] = cart
+        request.session.modified =True
 
-            return redirect('cart')
+        return redirect('cart')
     return render(request,'detail.html',{'product':product})
 
+
+#to add product to cart
 def cart(request):
-    return render(request,'cart.html')
+    cart = request.session.get('cart',{})
+    count = sum(item['quantity'] for item in cart.values())
+    cart_items =[]
+    total = 0
+    for item in cart.values():
+        item_total = item['price'] * item['quantity']
+        total += item_total
+        cart_items.append({
+            #  use .get() to avoid keyerror
+            'id':item.get('id') ,
+            'productName': item['productName'],
+            'price': item['price'],
+            'image': item['image'],
+            'quantity': item['quantity'],
+            'total': item_total,
+        })
+
+    return render(request,'cart.html',{
+        'cart_count':count,
+        "cart_items":cart_items,
+        'cart_total':total,
+        'cart':cart,
+        })
+
+
+#remove from cart
+def remove_from_cart(request):
+    if request.method == 'POST':
+        product_id = str(request.POST.get('product_id'))
+        cart= request.session.get('cart',{})
+        if product_id in cart:
+            del cart[product_id]
+            request.session['cart'] =cart
+            request.session.modified =True
+            print("Removed!")
+
+    return redirect('cart')
+                                  
 
 def checkout(request):
-    return render(request,'checkout.html')
+    
+    cart = request.session.get('cart', {})
+    cart_items = []
+    cart_subtotal = 0
+    shipping_cost = 10
+
+    for item in cart.values():
+        item_total = item['price'] * item['quantity']
+        cart_subtotal += item_total
+        cart_items.append({
+            'product': {'name': item['productName']},
+            'total_price': item_total,
+        })
+
+    cart_total = cart_subtotal + shipping_cost
+
+    # OTP verification step
+    if request.method == 'POST':
+        if 'otp' in request.POST:
+            user_otp = request.POST.get('otp')
+            session_otp = request.session.get('checkout_otp')
+            if user_otp == session_otp:
+                # OTP correct, save the order
+                form = CheckoutForm(request.session.get('checkout_form_data'))
+            if form.is_valid():
+                order = form.save()
+                # Send order placed email
+                send_mail(
+                    'Order Placed Successfully',
+                    # 'Thank you for shopping with us! Your order has been placed successfully.',
+                    # 'Our team is now processing it.',
+                    'Thankyou for choosing us.',
+                    'noreply@example.com',
+                    [order.email],  # Make sure your CheckoutForm/model has an 'email' field
+                    fail_silently=False,
+                )
+                del request.session['checkout_otp']
+                del request.session['checkout_form_data']
+                print("order placed successfully")
+                return redirect('index')  # Redirect to a success page or home page
+            else:
+                form = CheckoutForm(request.session.get('checkout_form_data'))
+                return render(request, 'checkout.html', {
+                    'form': form,
+                    'cart_items': cart_items,
+                    'cart_subtotal': cart_subtotal,
+                    'shipping_cost': shipping_cost,
+                    'cart_total': cart_total,
+                    'otp_error': 'Invalid OTP. Please try again.',
+                    'show_otp': True,
+                })
+        else:
+            form = CheckoutForm(request.POST)
+            if form.is_valid():
+                # Generate OTP
+                otp = str(random.randint(100000, 999999))
+                email = form.cleaned_data.get('email')
+                # Send OTP to email
+                send_mail(
+                    'Your Checkout OTP',
+                    f'Your OTP for checkout is: {otp}',
+                    'noreply@example.com',
+                    [email],
+                    fail_silently=False,
+                )
+                # Store OTP and form data in session
+                request.session['checkout_otp'] = otp
+                request.session['checkout_form_data'] = request.POST
+                
+                return render(request, 'checkout.html', {
+                    'form': form,
+                    'cart_items': cart_items,
+                    'cart_subtotal': cart_subtotal,
+                    'shipping_cost': shipping_cost,
+                    'cart_total': cart_total,
+                    'show_otp': True,
+                    'info': 'An OTP has been sent to your email. Please enter it below to complete your order.',
+                })
+            print("otp send successfully")
+                
+    else:
+        form = CheckoutForm()
+        
+
+    return render(request, 'checkout.html', {
+        'form': form,
+        'cart_items': cart_items,
+        'cart_subtotal': cart_subtotal,
+        'shipping_cost': shipping_cost,
+        'cart_total': cart_total,
+    })
+    
 
 def contact(request):
     return render(request,'contact.html')
@@ -112,6 +243,7 @@ def register_views(request):
         
     return render(request,'register_view.html',{'form': form})
 
+#to add new product by seller
 def product(request):
     if request.method == 'POST':
         form =ProductForm(request.POST, request.FILES)

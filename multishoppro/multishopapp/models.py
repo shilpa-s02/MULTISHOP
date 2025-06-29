@@ -47,3 +47,32 @@ class ModelRegister(models.Model):
         return self.businessName
 
 # Create your models here.
+
+class Checkout(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    mobile = models.CharField(max_length=20)
+    address1 = models.CharField(max_length=255)
+    address2 = models.CharField(max_length=255, blank=True)
+    country = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=20)
+    create_account = models.BooleanField(default=False)
+    ship_to_different = models.BooleanField(default=False)
+    # Shipping address fields
+    shipping_first_name = models.CharField(max_length=100, blank=True)
+    shipping_last_name = models.CharField(max_length=100, blank=True)
+    shipping_email = models.EmailField(blank=True)
+    shipping_mobile = models.CharField(max_length=20, blank=True)
+    shipping_address1 = models.CharField(max_length=255, blank=True)
+    shipping_address2 = models.CharField(max_length=255, blank=True)
+    shipping_country = models.CharField(max_length=100, blank=True)
+    shipping_city = models.CharField(max_length=100, blank=True)
+    shipping_state = models.CharField(max_length=100, blank=True)
+    shipping_zip_code = models.CharField(max_length=20, blank=True)
+    payment_method = models.CharField(max_length=50)
+
+    def _str_(self):
+        return f"{self.first_name} {self.last_name} - {self.email}"

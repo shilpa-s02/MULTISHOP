@@ -1,22 +1,22 @@
-{% extends 'base.html' %}
+{% extends 'base.html'%}
 {% load static %}
-{% block content%}
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <title>MultiShop - Online Shop Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
 
+    
 </head>
 
 <body>
-    <!-- Topbar Start -->
-
-    <!-- Topbar End -->
-
-
-    <!-- Navbar Start -->
-
-    <!-- Navbar End -->
+   
 
 
     <!-- Breadcrumb Start -->
@@ -49,111 +49,52 @@
                         </tr>
                     </thead>
                     <tbody class="align-middle">
+                        {% if cart_items %}
+                            {% for item in cart_items %}
                         <tr>
-                            <td class="align-middle"><img src="{% static 'img/product-1.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
+                            <td class="align-middle"><img src="{{ item.image }}" alt="" style="width: 50px;"> {{ item.productName }}</td>
+                            <td class="align-middle">₹{{ item.price }}</td>
                             <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <!-- <button class="btn btn-sm btn-primary btn-minus" >
                                         <i class="fa fa-minus"></i>
-                                        </button>
+                                        </button> -->
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{ item.quantity }}" readonly>
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
+                                        <!-- <button class="btn btn-sm btn-primary btn-plus">
                                             <i class="fa fa-plus"></i>
-                                        </button>
+                                        </button> -->
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">$150</td>
+                            <td class="align-middle">₹{{ item.total }}</td>
                             <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
                         </tr>
                         <tr>
-                            <td class="align-middle"><img src="{% static 'img/product-2.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
+                            <!-- <td class="align-middle"><img src="{{item.image}}" alt="" style="width: 50px;"> {{ item.productName }}</td>
+                            <td class="align-middle">₹150</td>
+                            <td class="align-middle"> -->
+                                <form method="POST" action="{% url 'remove_from_cart' %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product_id" value="{{ item.id }}">
+                                    <button type="submit" class="btn btn-sm btn-danger"></button>
                                         <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                                    </button>    
+                                </form>        
+                                    
+                            <!-- </td> -->
+                            
                         </tr>
+                            {% endfor %}
+                        {% else %}    
                         <tr>
-                            <td class="align-middle"><img src="{% static 'img/product-3.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
+                            <td colspan="5" class="text-center">your cart is empty.</td>
                         </tr>
-                        <tr>
-                            <td class="align-middle"><img src="{% static 'img/product-4.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="{% static 'img/product-5.jpg' %}" alt="" style="width: 50px;"> Product Name</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
-                        </tr>
+                        {% endif %}
+                        
+                            
                     </tbody>
                 </table>
             </div>
@@ -171,22 +112,39 @@
                     <div class="border-bottom pb-2">
                         <div class="d-flex justify-content-between mb-3">
                             <h6>Subtotal</h6>
-                            <h6>$150</h6>
+                            <h6>₹{{ cart_total }}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
+                            <h6 class="font-weight-medium">₹10</h6>
                         </div>
                     </div>
                     <div class="pt-2">
                         <div class="d-flex justify-content-between mt-2">
                             <h5>Total</h5>
-                            <h5>$160</h5>
+                            <h5>₹{{ cart_total|add:"10" }}</h5>
                         </div>
-                        <div>
-                        <!-- <a href="{% url 'checkout' %}">Proceed To checkout</a> -->
-                        <button class="btn btn-block btn-primary font-weight-bold my-3 py-3"><a href="{% url 'checkout' %}"></a>Proceed To Checkout</button>
-                        </div>
+                      <!-- <li class="nav-item"> 
+                         <a href="#" class="nav-link">  -->
+                            <a class="btn btn-seller"href="{% url 'checkout'%}">
+                                 <!-- <i class="fas fa-star me-1"></i>proceed To checkout -->
+                                <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
+                             <!-- <svg class="nav-icon" viewBox="0 0 24 24"> 
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg> -->
+                            </a>
+                        </a>    
+                        
+                  
+                        
+                    <!-- </li>      -->
+                        
+                  
+                        
+                    
+                    
+                        <!-- <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button> -->
                     </div>
                 </div>
             </div>
@@ -195,13 +153,13 @@
     <!-- Cart End -->
 
 
-    <!-- Footer Start -->
-   
-    <!-- Footer End -->
-
+    
 
     <!-- Back to Top -->
+    <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
+
+    
 </body>
 
 </html>

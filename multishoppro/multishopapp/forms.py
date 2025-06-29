@@ -1,5 +1,5 @@
 from django import forms
-from .models import products,ModelRegister
+from .models import products,ModelRegister,Checkout
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -46,3 +46,23 @@ class RegisterForm(forms.ModelForm):
     
         if password and confirm_password and password != confirm_password:
             self.add_error('confirmPassword',"password do not match.")
+
+
+class CheckoutForm(forms.ModelForm):
+    class Meta:
+        model = Checkout
+        fields = [
+            'first_name', 'last_name', 'email', 'mobile', 'address1', 'address2',
+            'country', 'city', 'state', 'zip_code', 'create_account', 'ship_to_different',
+            'shipping_first_name', 'shipping_last_name', 'shipping_email', 'shipping_mobile',
+            'shipping_address1', 'shipping_address2', 'shipping_country', 'shipping_city',
+            'shipping_state', 'shipping_zip_code', 'payment_method'
+        ]
+        widgets = {
+            'payment_method': forms.RadioSelect(choices=[
+                ('paypal', 'Paypal'),
+                ('directcheck', 'Direct Check'),
+                ('banktransfer', 'Bank Transfer')
+            ])
+        }
+
